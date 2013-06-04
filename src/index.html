@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html ng-app="ngBoilerplate" ng-controller="AppCtrl">
+<html ng-app="ngBoilerplate">
   <head>
     <title>ng-boilerplate</title>
+
+<!--     // <script type="text/javascript" src="/static/angular.js"></script>
+    // <script type="text/javascript" src="/static/bootstrap.js"></script> -->
 
     <!-- your compiles CSS -->
     <link rel="stylesheet" type="text/css" href="assets/<%= grunt.config.get('pkg.name') %>.css"/>
@@ -22,7 +25,53 @@
     </script>
   </head>
   <body>
-    <div class="container">
+    <div class="navbar" ng-controller="HeaderCtrl">
+        <div class="navbar-inner">
+            <a class="brand" ng-click="home()">Zanox Fastlane</a>
+            <ul class="nav">
+                <li ng-class="{active:isNavbarActive('projectsinfo')}"><a href="/projectsinfo">Current Projects</a></li>
+            </ul>
+
+            <ul class="nav" ng-show="isAuthenticated()">
+                <li><a href="/projects">Projects</a></li>
+
+                <li class="dropdown" ng-class="{active:isNavbarActive('admin'), open:isProjectsOpen}" ng-show="isAdmin()">
+                    <a id="adminmenu" role="button" class="dropdown-toggle" ng-click="isProjectsOpen=!isProjectsOpen">Zanox Projects<b class="caret"></b></a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="adminmenu">
+                        <li ng-repeat="artifact in artifacts"><a tabindex="-1" href="/project/{{artifact}}">{{artifact}}</a></li>
+                    </ul>
+                </li>
+
+                <li ng-class="{active:isNavbarActive('projects')}"><a href="/projects">My Projects</a></li>
+                <li class="dropdown" ng-class="{active:isNavbarActive('admin'), open:isAdminOpen}" ng-show="isAdmin()">
+                    <a id="adminmenu" role="button" class="dropdown-toggle" ng-click="isAdminOpen=!isAdminOpen">Admin<b class="caret"></b></a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="adminmenu">
+                        <li><a tabindex="-1" href="/admin/projects" ng-click="isAdminOpen=false">Manage Projects</a></li>
+                        <li><a tabindex="-1" href="/admin/users" ng-click="isAdminOpen=false">Manage Users</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav pull-right" ng-show="hasPendingRequests()">
+                <li class="divider-vertical"></li>
+                <li><a href="#"><img src="/static/img/spinner.gif"></a></li>
+            </ul>
+            <login-toolbar></login-toolbar>
+        </div>
+        <div>
+            <ul class="breadcrumb">
+                <li ng-repeat="breadcrumb in breadcrumbs.getAll()">
+                    <span class="divider">/</span>
+                    <ng-switch on="$last">
+                        <span ng-switch-when="true">{{breadcrumb.name}}</span>
+                        <span ng-switch-default><a href="{{breadcrumb.path}}">{{breadcrumb.name}}</a></span>
+                    </ng-switch>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="container" ng-controller="AppCtrl">
       <div class="masthead">
         <h3 class="muted">ng-boilerplate</h3>
         <div class="navbar">
